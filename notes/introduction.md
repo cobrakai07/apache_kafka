@@ -50,3 +50,23 @@ Zookeeper manages instances of kafka running together in a cluster to share load
 ![alt text](image-7.png)
 ![alt text](image-8.png)
 ![alt text](image-9.png)
+
+docker run -d --name zookeeper -p 2181:2181 -e ZOOKEEPER_CLIENT_PORT=2181 -e ZOOKEEPER_TICK_TIME=2000 confluentinc/cp-zookeeper:7.5.0
+
+
+docker run -d --name kafka -p 9092:9092 -e KAFKA_BROKER_ID=1 -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 -e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 --link zookeeper confluentinc/cp-kafka:7.5.0
+
+docker exec -it kafka bash
+
+kafka-topics --create --topic my-topic --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+
+kafka-topics --list --bootstrap-server localhos
+t:9092
+
+kafka-topics --describe --topic my-topic --bootstrap-server localhost:9092
+
+kafka-console-producer --topic my-topic --bootstrap-server localhost:9092
+
+docker exec -it kafka bash
+
+kafka-console-consumer --topic my-topic --bootstrap-server localhost:9092 --from-beginning
